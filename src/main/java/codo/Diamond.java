@@ -8,30 +8,23 @@ public class Diamond {
 
 
         StringBuilder diamond = new StringBuilder();
-        for (int layer=0; layer<size; layer++) {
-            diamond.append(buildDiamondLayer(layer, size));
-        }
+        int middle = size / 2;
 
+        for (int layer=0; layer<middle; layer++) {
+                diamond.append(" ".repeat(middle-layer));
+                diamond.append("*".repeat(1+layer*2));
+                diamond.append("\n");
+        }
+        diamond.append("*".repeat(size));
+        diamond.append("\n");
+        String[] diamondLayers = diamond.toString().split("\n");
+
+        for (int i=diamondLayers.length-2; i>=0; i--) {
+            diamond.append(diamondLayers[i]).append("\n");
+        }
         // TODO your code here
         return diamond.toString();
     }
 
-    private static String buildDiamondLayer(int layer, int size) {
-        StringBuilder diamondLayer = new StringBuilder();
-        int middle = size / 2;
 
-        for (int i=0; i<middle-(layer); i++) {
-            diamondLayer.append(" ");
-        }
-
-        for (int i=middle-(layer); i<=middle+(layer); i++) {
-            diamondLayer.append("*");
-        }
-
-        for (int i=0; i<middle-(layer); i++) {
-            diamondLayer.append(" ");
-        }
-        diamondLayer.append("\n");
-        return diamondLayer.toString();
-    }
 }

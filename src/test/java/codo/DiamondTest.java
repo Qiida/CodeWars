@@ -6,31 +6,31 @@ import org.junit.jupiter.api.Test;
 public class DiamondTest {
     @Test
     public void testDiamond3() {
-        StringBuffer expected = new StringBuffer();
-        expected.append(" *\n");
-        expected.append("***\n");
-        expected.append(" *\n");
+        String expected = """
+                 *
+                ***
+                 *
+                """;
 
-        Assertions.assertEquals(expected.toString(), Diamond.print(3));
+        Assertions.assertEquals(expected, Diamond.print(3));
     }
 
     @Test
     public void testDiamond5() {
-        StringBuffer expected = new StringBuffer();
-        expected.append("  *\n");
-        expected.append(" ***\n");
-        expected.append("*****\n");
-        expected.append(" ***\n");
-        expected.append("  *\n");
+        String expected = """
+                  *
+                 ***
+                *****
+                 ***
+                  *
+                """;
 
-        Assertions.assertEquals(expected.toString(), Diamond.print(5));
+        Assertions.assertEquals(expected, Diamond.print(5));
     }
 
     @Test
     public void testDiamond1() {
-        StringBuffer expected = new StringBuffer();
-        expected.append("*\n");
-        Assertions.assertEquals(expected.toString(), Diamond.print(1));
+        Assertions.assertEquals("*\n", Diamond.print(1));
     }
 
     @Test

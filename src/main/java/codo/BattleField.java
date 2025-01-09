@@ -21,7 +21,8 @@ public class BattleField {
         int numberOfCruisers = 0;
         int numberOfDestroyers = 0;
         int numberOfSubmarines = 0;
-        int[][] workingField = prettyPrintAndCopyField(field);
+        int[][] workingField = copyField(field);
+//        prettyPrint(field);
         if (hasCollisions(field)) {
             System.out.println("Invalid Field");
             return false;
@@ -38,17 +39,17 @@ public class BattleField {
                             case "submarine" -> numberOfSubmarines++;
                         }
                     } else {
-                        System.out.println("Broken at ("+x+","+y+")");
+//                        System.out.println("Broken at ("+x+","+y+")");
                         return false;
                     }
-                    System.out.println("Ship at ("+x+","+y+") -> "+shipType);
+//                    System.out.println("Ship at ("+x+","+y+") -> "+shipType);
                 }
             }
         }
-        System.out.println(numberOfBattleships+" / "+TARGET_OF_BATTLESHIPS+" Battleships found");
-        System.out.println(numberOfCruisers+" / "+TARGET_OF_CRUISERS+" Cruisers found");
-        System.out.println(numberOfDestroyers+" / "+TARGET_OF_DESTROYERS+" Destroyers found");
-        System.out.println(numberOfSubmarines+" / "+TARGET_OF_SUBMARINES+" Submarines found");
+//        System.out.println(numberOfBattleships+" / "+TARGET_OF_BATTLESHIPS+" Battleships found");
+//        System.out.println(numberOfCruisers+" / "+TARGET_OF_CRUISERS+" Cruisers found");
+//        System.out.println(numberOfDestroyers+" / "+TARGET_OF_DESTROYERS+" Destroyers found");
+//        System.out.println(numberOfSubmarines+" / "+TARGET_OF_SUBMARINES+" Submarines found");
         return numberOfBattleships == TARGET_OF_BATTLESHIPS &&
                 numberOfCruisers == TARGET_OF_CRUISERS &&
                 numberOfDestroyers == TARGET_OF_DESTROYERS &&
@@ -62,7 +63,7 @@ public class BattleField {
                 if (value == 1) {
                     boolean hasValidNeighbours = checkVonNeumann(field, x, y);
                     if (!hasValidNeighbours) {
-                        System.out.println("Collision at ("+x+","+y+")");
+//                        System.out.println("Collision at ("+x+","+y+")");
                         return true;
                     }
                 }
@@ -72,14 +73,23 @@ public class BattleField {
         return false;
     }
 
-    private static int[][] prettyPrintAndCopyField(int[][] field) {
+    private static int[][] copyField(int[][] field) {
         int[][] workingField = new int[DIM_Y][DIM_X];
+        for (int y=0; y<DIM_Y; y++) {
+            for (int x=0; x<DIM_X; x++) {
+                int value = field[y][x];
+                workingField[y][x] = value;
+            }
+        }
+        return workingField;
+    }
+
+    private static void prettyPrint(int[][] field) {
         System.out.println("   0 1 2 3 4 5 6 7 8 9 ");
         for (int y=0; y<DIM_Y; y++) {
             StringBuilder rowStringBuilder = new StringBuilder().append(y).append(" ").append("{");
             for (int x=0; x<DIM_X; x++) {
                 int value = field[y][x];
-                workingField[y][x] = value;
                 rowStringBuilder.append(value);
                 if (x<DIM_X-1) {
                     rowStringBuilder.append(",");
@@ -89,7 +99,6 @@ public class BattleField {
             }
             System.out.println(rowStringBuilder);
         }
-        return workingField;
     }
 
     public static boolean checkVonNeumann(int[][] field, int x, int y) {

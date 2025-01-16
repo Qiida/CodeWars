@@ -47,17 +47,20 @@ class ChessBoard {
     }
 
     boolean play(String move) {
-        if (numberOfMoves % 2 == 0) {
-            if (white.play(move)) {
-                return true;
-            } else {
-                invalidMove = move;
+        switch(getPlayersTurn()) {
+            case WHITE -> {
+                if (white.play(move)) {
+                    return true;
+                } else {
+                    invalidMove = move;
+                }
             }
-        } else {
-            if (black.play(move)) {
-                return true;
-            } else {
-                invalidMove = move;
+            case BLACK -> {
+                if (black.play(move)) {
+                    return true;
+                } else {
+                    invalidMove = move;
+                }
             }
         }
         return false;
@@ -124,6 +127,14 @@ class ChessBoard {
         }
         return -1;
     }
+
+    private Color getPlayersTurn() {
+        if (numberOfMoves % 2 == 0) {
+            return Color.WHITE;
+        } else {
+            return Color.BLACK;
+        }
+    }
 }
 
 class Player {
@@ -153,7 +164,8 @@ class Player {
                         chessBoard.executeMove(move, pawn);
                         return true;
                     }
-                    if (Objects.equals(pawn.move(), move) && !chessBoard.positionPawnMap.containsKey(move)) {
+                    if (Objects.equals(pawn.move(), move) &&
+                            !chessBoard.positionPawnMap.containsKey(move)) {
                         chessBoard.executeMove(move, pawn);
                         return true;
                     }

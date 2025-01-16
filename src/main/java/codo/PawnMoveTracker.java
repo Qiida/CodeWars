@@ -49,7 +49,6 @@ class ChessBoard {
     boolean play(String move) {
         if (numberOfMoves % 2 == 0) {
             if (white.play(move)) {
-
                 return true;
             } else {
                 invalidMove = move;

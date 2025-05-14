@@ -6,7 +6,6 @@ public class DeadFish {
     public static int[] parse(String data) {
         int size = getSize(data);
         int value = 0;
-
         int[] output = new int[size];
         int outputIndex = 0;
         for (char c : data.toCharArray()) {

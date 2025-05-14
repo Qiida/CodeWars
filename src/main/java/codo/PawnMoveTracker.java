@@ -91,16 +91,16 @@ class ChessBoard {
     }
 
     ArrayList<Pawn> getPawnsOnColumn(String column, Color color) {
-        ArrayList<Pawn> pawns_on_column = new ArrayList<>();
+        ArrayList<Pawn> pawnsOnColumn = new ArrayList<>();
         for (String position : positionPawnMap.keySet()) {
             if (position.contains(column)) {
                 Pawn pawn = positionPawnMap.get(position);
                 if (pawn.color == color) {
-                    pawns_on_column.add(pawn);
+                    pawnsOnColumn.add(pawn);
                 }
             }
         }
-        return pawns_on_column;
+        return pawnsOnColumn;
     }
 
     void executeMove(String move, Pawn pawn) {

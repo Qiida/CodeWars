@@ -13,7 +13,7 @@ public class PathFinder {
 }
 
 enum Direction {
-    NORTH, EAST, SOUTH, WEST
+    NORTH, EAST, SOUTH, WEST, NULL
 }
 
 class Mountain {
@@ -148,7 +148,6 @@ class Path {
     Path(Area start, Area goal, Mountain mountain) {
         this.mountain = mountain;
         walked.push(start);
-
         Area current = walked.peek();
         Direction directionToWalk = null;
         Integer lowestClimbs = null;
@@ -183,49 +182,46 @@ class Path {
         return (current.x == goal.x) && (current.y == goal.y);
     }
 
+    private static double distance(Area from, Area to) {
+        return Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+    }
+
     Direction walk(Direction direction) {
         Area current = walked.peek();
         return switch (direction) {
-            case NORTH -> {
-                walkNorth(current);
-                yield Direction.SOUTH;
-            }
-            case EAST -> {
-                walkEast(current);
-                yield Direction.WEST;
-            }
-            case SOUTH -> {
-                walkSouth(current);
-                yield Direction.NORTH;
-            }
-            case WEST -> {
-                walkWest(current);
-                yield Direction.EAST;
-            }
+            case NORTH -> walkNorth(current);
+            case EAST -> walkEast(current);
+            case SOUTH -> walkSouth(current);
+            case WEST -> walkWest(current);
+            case NULL -> Direction.NULL;
         };
     }
-    void walkNorth(Area current) {
+    Direction walkNorth(Area current) {
         Area next = current.getNorth();
         climbs += current.getClimbs(Direction.NORTH);
         walked.push(next);
+        return Direction.SOUTH;
     }
 
-    void walkEast(Area current) {
+    Direction walkEast(Area current) {
         Area next = current.getEast();
         climbs += current.getClimbs(Direction.EAST);
         walked.push(next);
+        return Direction.WEST;
     }
 
-    void walkSouth(Area current) {
+    Direction walkSouth(Area current) {
         Area next = current.getSouth();
         climbs += current.getClimbs(Direction.SOUTH);
         walked.push(next);
+        return Direction.NORTH;
     }
 
-    void walkWest(Area current) {
+    Direction walkWest(Area current) {
         Area next = current.getWest();
         climbs += current.getClimbs(Direction.WEST);
         walked.push(next);
+        return Direction.EAST;
     }
 }
 

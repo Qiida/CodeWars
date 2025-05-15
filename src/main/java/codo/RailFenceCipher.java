@@ -7,13 +7,13 @@ import java.util.Objects;
 
 public class RailFenceCipher {
 
-    public static String encode(String stringToEncode, int rails) {
-        if (Objects.equals(stringToEncode, "")) {
-            return stringToEncode;
+    public static String encode(String toEncode, int n) {
+        if (Objects.equals(toEncode, "")) {
+            return toEncode;
         }
-        ArrayList<Character[]> railFences = initializeRailFences(stringToEncode, rails);
-        buildEncoderRailFences(railFences, stringToEncode);
-        Character[][] encoderMatrix = buildEncoderMatrix(rails, railFences);
+        ArrayList<Character[]> railFences = initializeRailFences(toEncode, n);
+        buildEncoderRailFences(railFences, toEncode);
+        Character[][] encoderMatrix = buildEncoderMatrix(n, railFences);
         StringBuilder encoded = new StringBuilder();
         for (Character[] characters : encoderMatrix) {
             for (int j = 0; j < encoderMatrix[0].length; j++) {
@@ -26,15 +26,15 @@ public class RailFenceCipher {
         return encoded.toString();
     }
 
-    private static Character[][] buildEncoderMatrix(int rails, ArrayList<Character[]> railFences) {
-        Character[][] encoderMatrix = new Character[rails][railFences.size()];
+    private static Character[][] buildEncoderMatrix(int n, ArrayList<Character[]> railFences) {
+        Character[][] encoderMatrix = new Character[n][railFences.size()];
         for (int r = 0; r < railFences.size(); r++) {
             Character[] railFence = railFences.get(r);
-            Character[] workingRailFence = new Character[rails];
-            if (railFence.length == rails) {
+            Character[] workingRailFence = new Character[n];
+            if (railFence.length == n) {
                 workingRailFence = railFence;
             } else if (r % 2 == 0) {
-                for (int j = 0; j < rails; j++) {
+                for (int j = 0; j < n; j++) {
                     if (j == 0) {
                         workingRailFence[j] = null;
                     } else {
@@ -42,20 +42,20 @@ public class RailFenceCipher {
                     }
                 }
             } else {
-                Character[] reversedRailFence = new Character[rails];
+                Character[] reversedRailFence = new Character[n];
                 int index = 0;
                 for (int j = railFence.length - 1; j >= 0; j--) {
                     reversedRailFence[index++] = railFence[j];
                 }
-                for (int j = 0; j < rails; j++) {
-                    if (j == rails - 1) {
+                for (int j = 0; j < n; j++) {
+                    if (j == n - 1) {
                         workingRailFence[j] = null;
                     } else {
                         workingRailFence[j] = reversedRailFence[j];
                     }
                 }
             }
-            for (int j = 0; j < rails; j++) {
+            for (int j = 0; j < n; j++) {
                 encoderMatrix[j][r] = workingRailFence[j];
             }
         }
@@ -77,25 +77,25 @@ public class RailFenceCipher {
         }
     }
 
-    private static ArrayList<Character[]> initializeRailFences(String stringToEncode, int rails) {
+    private static ArrayList<Character[]> initializeRailFences(String string, int n) {
         ArrayList<Character[]> railFences = new ArrayList<>();
-        int numRemainingLetters = stringToEncode.length();
-        railFences.add(new Character[rails]);
-        numRemainingLetters -= rails;
+        int numRemainingLetters = string.length();
+        railFences.add(new Character[n]);
+        numRemainingLetters -= n;
         while (numRemainingLetters > 0) {
-            railFences.add(new Character[rails - 1]);
-            numRemainingLetters -= rails - 1;
+            railFences.add(new Character[n - 1]);
+            numRemainingLetters -= n - 1;
         }
         return railFences;
     }
 
-    static String decode(String stringToDecode, int rails) {
-        if (Objects.equals(stringToDecode, "")) {
-            return stringToDecode;
+    public static String decode(String toDecode, int n) {
+        if (Objects.equals(toDecode, "")) {
+            return toDecode;
         }
-        ArrayList<Character[]> railFences = initializeRailFences(stringToDecode, rails);
-        Character[][] decoderMatrix = buildDecoderMatrix(stringToDecode, rails, railFences);
-        buildDecoderRailFences(rails, decoderMatrix, railFences);
+        ArrayList<Character[]> railFences = initializeRailFences(toDecode, n);
+        Character[][] decoderMatrix = buildDecoderMatrix(toDecode, n, railFences);
+        buildDecoderRailFences(n, decoderMatrix, railFences);
         StringBuilder decoded = new StringBuilder();
         for (Character[] railFence : railFences) {
             for (Character c : railFence) {
@@ -107,21 +107,21 @@ public class RailFenceCipher {
         return decoded.toString();
     }
 
-    private static void buildDecoderRailFences(int rails, Character[][] decoderMatrix, ArrayList<Character[]> railFences) {
+    private static void buildDecoderRailFences(int n, Character[][] decoderMatrix, ArrayList<Character[]> railFences) {
         int rail = 0;
         for (int x = 0; x < decoderMatrix[0].length; x++) {
             int row;
             if (x % 2 == 0) {
                 row = 0;
-                for (int y = 0; y < rails; y++) {
+                for (int y = 0; y < n; y++) {
                     Character c = decoderMatrix[y][x];
                     if (c != null) {
                         railFences.get(rail)[row++] = c;
                     }
                 }
             } else {
-                row = rails - 2;
-                for (int y = 0; y < rails; y++) {
+                row = n - 2;
+                for (int y = 0; y < n; y++) {
                     Character c = decoderMatrix[y][x];
                     if (c != null) {
                         railFences.get(rail)[row--] = c;
@@ -131,23 +131,29 @@ public class RailFenceCipher {
             rail++;
         }
     }
-
-    private static Character[][] buildDecoderMatrix(String stringToDecode, int rails, ArrayList<Character[]> railFences) {
-        Character[][] decoderMatrix = new Character[rails][railFences.size()];
-        char[] characters = stringToDecode.toCharArray();
-        int index = 0;
+    private static Character[][] buildDecoderMatrix(String toDecode, int n, ArrayList<Character[]> railFences) {
+        Character[][] decoderMatrix = new Character[n][railFences.size()];
+        char[] characters = toDecode.toCharArray();
+        int i = 0;
+        int toDecodeLength = toDecode.length();
+        int overheadOfLastRailFence = 0;
+        for (Character[] railFence : railFences) {
+            overheadOfLastRailFence += railFence.length;
+        }
+        overheadOfLastRailFence -= toDecodeLength;
+        int overheadIndex = n - overheadOfLastRailFence;
         for (int y = 0; y < decoderMatrix.length; y++) {
             for (int x = 0; x < decoderMatrix[0].length; x++) {
-                if (index < stringToDecode.length()) {
+                if (i < toDecodeLength) {
                     if (x == 0) {
-                        decoderMatrix[y][x] = characters[index++];
+                        decoderMatrix[y][x] = Character.valueOf(characters[i++]);
                     } else if (
-                            (x % 2 == 0 && y == 0) ||
-                                    (x % 2 != 0 && y == rails - 1)
+                            ((x % 2 == 0) && ((y == 0) || (x == decoderMatrix[0].length - 1 && y >= overheadIndex)))
+                                    || ((x % 2 != 0) && ((y == n - 1) || (x == decoderMatrix[0].length - 1 && y <= overheadOfLastRailFence - 1)))
                     ) {
                         decoderMatrix[y][x] = null;
                     } else {
-                        decoderMatrix[y][x] = characters[index++];
+                        decoderMatrix[y][x] = Character.valueOf(characters[i++]);
                     }
                 }
             }

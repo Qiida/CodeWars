@@ -26,9 +26,37 @@ public class RailFenceCipher {
         return encoded.toString();
     }
 
+    private static ArrayList<Character[]> initializeRailFences(String string, int n) {
+        ArrayList<Character[]> railFences = new ArrayList<>();
+        int numRemainingLetters = string.length();
+        railFences.add(new Character[n]);
+        numRemainingLetters -= n;
+        while (numRemainingLetters > 0) {
+            railFences.add(new Character[n - 1]);
+            numRemainingLetters -= n - 1;
+        }
+        return railFences;
+    }
+
+    private static void buildEncoderRailFences(ArrayList<Character[]> railFences, String stringToEncode) {
+        Deque<Character> characterStack = new ArrayDeque<>();
+        char[] chars = stringToEncode.toCharArray();
+        for (int i = 0; i < stringToEncode.length(); i++) {
+            characterStack.add(chars[i]);
+        }
+        for (Character[] railFence : railFences) {
+            for (int i = 0; i < railFence.length; i++) {
+                if (!characterStack.isEmpty()) {
+                    railFence[i] = characterStack.pop();
+                }
+            }
+        }
+    }
+
     private static Character[][] buildEncoderMatrix(int n, ArrayList<Character[]> railFences) {
-        Character[][] encoderMatrix = new Character[n][railFences.size()];
-        for (int r = 0; r < railFences.size(); r++) {
+        int railFencesSize = railFences.size();
+        Character[][] encoderMatrix = new Character[n][railFencesSize];
+        for (int r = 0; r < railFencesSize; r++) {
             Character[] railFence = railFences.get(r);
             Character[] workingRailFence = new Character[n];
             if (railFence.length == n) {
@@ -60,33 +88,6 @@ public class RailFenceCipher {
             }
         }
         return encoderMatrix;
-    }
-
-    private static void buildEncoderRailFences(ArrayList<Character[]> railFences, String stringToEncode) {
-        Deque<Character> characterStack = new ArrayDeque<>();
-        char[] chars = stringToEncode.toCharArray();
-        for (int i = 0; i < stringToEncode.length(); i++) {
-            characterStack.add(chars[i]);
-        }
-        for (Character[] railFence : railFences) {
-            for (int i = 0; i < railFence.length; i++) {
-                if (!characterStack.isEmpty()) {
-                    railFence[i] = characterStack.pop();
-                }
-            }
-        }
-    }
-
-    private static ArrayList<Character[]> initializeRailFences(String string, int n) {
-        ArrayList<Character[]> railFences = new ArrayList<>();
-        int numRemainingLetters = string.length();
-        railFences.add(new Character[n]);
-        numRemainingLetters -= n;
-        while (numRemainingLetters > 0) {
-            railFences.add(new Character[n - 1]);
-            numRemainingLetters -= n - 1;
-        }
-        return railFences;
     }
 
     public static String decode(String toDecode, int n) {

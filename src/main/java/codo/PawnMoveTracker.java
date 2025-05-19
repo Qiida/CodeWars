@@ -11,7 +11,7 @@ public class PawnMoveTracker {
         ChessBoard chessBoard = new ChessBoard();
         for (String move : moves) {
             if (!chessBoard.play(move)) {
-                return chessBoard.getErrorArray();
+                return new String[][]{{move +" is invalid"}};
             }
         }
         return chessBoard.getArray();
@@ -32,7 +32,6 @@ class ChessBoard {
     final Player black = new Player(Color.BLACK, this);
     final Player white = new Player(Color.WHITE, this);
     int numberOfMoves = 0;
-    private String invalidMove = null;
     final LinkedHashMap<String, Pawn> positionPawnMap = new LinkedHashMap<>();
 
     ChessBoard() {
@@ -47,23 +46,10 @@ class ChessBoard {
     }
 
     boolean play(String move) {
-        switch(getPlayersTurn()) {
-            case WHITE -> {
-                if (white.play(move)) {
-                    return true;
-                } else {
-                    invalidMove = move;
-                }
-            }
-            case BLACK -> {
-                if (black.play(move)) {
-                    return true;
-                } else {
-                    invalidMove = move;
-                }
-            }
-        }
-        return false;
+        return switch(getPlayersTurn()) {
+            case WHITE -> white.play(move);
+            case BLACK -> black.play(move);
+        };
     }
 
     String[][] getArray() {
@@ -84,10 +70,6 @@ class ChessBoard {
             }
         }
         return chessBoardArray;
-    }
-
-    String[][] getErrorArray() {
-        return new String[][]{{invalidMove +" is invalid"}};
     }
 
     ArrayList<Pawn> getPawnsOnColumn(String column, Color color) {
@@ -148,8 +130,8 @@ class Player {
         this.chessBoard = chessBoard;
     }
 
-    void setUpPiece(Pawn pawn) {
-        chessBoard.positionPawnMap.put(pawn.position, pawn);
+    void setUpPiece(Pawn piece) {
+        chessBoard.positionPawnMap.put(piece.position, piece);
     }
 
     boolean play(String move) {
